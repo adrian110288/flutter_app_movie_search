@@ -4,9 +4,8 @@ import 'package:flutter_app_movie_search/model/movie.dart';
 
 class MovieRow extends StatefulWidget {
   final Movie movie;
-  final MovieDatabase db;
 
-  MovieRow(this.movie, this.db);
+  MovieRow(this.movie);
 
   @override
   _MovieRowState createState() => _MovieRowState();
@@ -14,13 +13,25 @@ class MovieRow extends StatefulWidget {
 
 class _MovieRowState extends State<MovieRow> {
   Movie movieState;
-  MovieDatabase db;
 
   @override
   void initState() {
     super.initState();
     movieState = widget.movie;
-    db = widget.db;
+    MovieDatabase db = MovieDatabase();
+    db
+        .getMovie(movieState.id)
+        .then((movie) => setState(() => movieState.favored = movie.favored));
+  }
+
+  void _onPressed() {
+    MovieDatabase db = MovieDatabase();
+    setState(() {
+      movieState.favored = !movieState.favored;
+      movieState.favored == true
+          ? db.addMovie(movieState)
+          : db.deleteMovie(movieState.id);
+    });
   }
 
   @override
@@ -29,16 +40,10 @@ class _MovieRowState extends State<MovieRow> {
       child: ExpansionTile(
         initiallyExpanded: false,
         leading: IconButton(
-          icon: movieState.favored ? Icon(Icons.star) : Icon(Icons.star_border),
-          color: Colors.white,
-          onPressed: () =>
-              setState(() {
-                movieState.favored = !movieState.favored;
-                movieState.favored == true
-                    ? db.addMovie(movieState)
-                    : db.deleteMovie(movieState.id);
-              }),
-        ),
+            icon:
+            movieState.favored ? Icon(Icons.star) : Icon(Icons.star_border),
+            color: Colors.white,
+            onPressed: _onPressed),
         title: Container(
           height: 200,
           padding: EdgeInsets.all(10.0),

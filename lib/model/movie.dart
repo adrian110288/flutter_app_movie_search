@@ -12,6 +12,14 @@ class Movie {
     favored = false;
   }
 
+  Movie.fromDb(Map map) {
+    title = map["title"];
+    posterPath = map["poster_path"];
+    id = map["id"].toString();
+    overview = map["overview"];
+    favored = map["favored"] == 1;
+  }
+
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     map["id"] = id;

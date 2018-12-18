@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_movie_search/database/db.dart';
 import 'package:flutter_app_movie_search/model/movie.dart';
 import 'package:flutter_app_movie_search/movie_row.dart';
 import 'package:http/http.dart' as http;
@@ -19,22 +18,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Movie> _movies = List();
   bool _hasLoaded = true;
-  MovieDatabase _db;
 
   final PublishSubject subject = PublishSubject<String>();
 
   @override
   void dispose() {
     subject.close();
-    _db.closeDb();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _db = MovieDatabase();
-    _db.initDB();
     subject.stream.debounce(Duration(milliseconds: 400)).listen(searchMovies);
   }
 
@@ -75,9 +70,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Movie Searcher"),
-      ),
       body: Container(
         padding: EdgeInsets.all(10.0),
         child: Column(
@@ -90,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                     itemCount: _movies.length,
                     itemBuilder: (context, index) {
-                      return MovieRow(_movies[index], _db);
+                      return MovieRow(_movies[index]);
                     }))
           ],
         ),

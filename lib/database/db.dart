@@ -64,6 +64,21 @@ class MovieDatabase {
     return res;
   }
 
+  Future<List<Movie>> getMovies() async {
+    var dbClient = await db;
+    List<Map> res = await dbClient.query("Movies");
+
+    return res.map((map) => Movie.fromDb(map)).toList();
+  }
+
+  Future<Movie> getMovie(String id) async {
+    var dbClient = await db;
+    var res = await dbClient.query("Movies", where: "id = ?", whereArgs: [id]);
+
+    if (res.length == 0) return null;
+    return Movie.fromDb(res[0]);
+  }
+
   Future closeDb() async {
     var dbClient = await db;
     dbClient.close();
