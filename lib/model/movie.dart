@@ -11,4 +11,14 @@ class Movie {
     overview = json["overview"];
     favored = false;
   }
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map["id"] = id;
+    map["title"] = title;
+    map["poster_path"] = posterPath;
+    map["overview"] = overview;
+    map["favored"] = favored;
+    return map;
+  }
 }
